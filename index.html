@@ -226,7 +226,7 @@
           <div class="col-6 col-lg-3">
             <div class="card card-stat bg-school text-white h-100 border-0 shadow-sm">
               <div class="card-body">
-                <h6 class="text-uppercase opacity-75 small fw-bold">ภายในสถานศึกษา</h6>
+                <h6 class="text-uppercase opacity-75 small fw-bold">ระดับเขตพื้นที่</h6>
                 <h2 class="display-6 fw-bold mb-0" id="stat-school">0</h2>
               </div>
             </div>
@@ -463,7 +463,7 @@
     var total = data.length;
     var national = data.filter(function(item) { return item.category === 'ระดับชาติ'; }).length;
     var regional = data.filter(function(item) { return item.category === 'ระดับภาค'; }).length;
-    var school = data.filter(function(item) { return item.category === 'ภายในสถานศึกษา'; }).length;
+    var school = data.filter(function(item) { return item.category === 'ระดับเขตพื้นที่'; }).length;
     
     console.log("📈 [Stats Calculation] Counters updated -> Total:", total, "| National:", national, "| Regional:", regional, "| School:", school);
     
