@@ -672,9 +672,8 @@
 
     fetch(API_URL, {
       method: "POST",
-      mode: "no-cors", 
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "text/plain;charset=utf-8" // ใช้ text/plain เพื่อหลบเลี่ยงปัญหากฏ CORS ของ Google Web App
       },
       body: JSON.stringify(payload)
     })
