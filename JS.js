@@ -1,6 +1,6 @@
 <script>
   // 🔴 นำ Web App URL ที่ได้จากการ Deploy มาใส่ที่นี่ครับ
-  const API_URL = "แทนที่ด้วย_URL_WEB_APP_ของคุณ";
+  const API_URL = "https://script.google.com/macros/s/AKfycbzX--IJm1kAnFwVSGNApYxQN7rWiyQmpoJEs_hiYoyfMF1JU05f5uEuBsQmb9p7PdMdNg/exec";
 
   var awardsCachedData = [];
   var detailsModalObj = null;
