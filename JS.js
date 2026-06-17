@@ -1,4 +1,7 @@
 <script>
+  // 🔴 นำ Web App URL ที่ได้จากการ Deploy มาใส่ที่นี่ครับ
+  const API_URL = "แทนที่ด้วย_URL_WEB_APP_ของคุณ";
+
   var awardsCachedData = [];
   var detailsModalObj = null;
   var currentViewMode = 'table'; // สถานะมุมมองเริ่มต้น ('table' หรือ 'grid')
@@ -25,19 +28,37 @@
     yearSelect.innerHTML = optionsHtml;
   }
 
+  /**
+   * 🔄 ปรับปรุง: เปลี่ยนจาก google.script.run เป็น fetch (GET) เพื่อเรียกข้อมูลจาก API
+   */
   function loadDashboardData() {
-    google.script.run
-      .withSuccessHandler(function(data) {
-        awardsCachedData = data;
-        renderData(data); 
-        calculateStats(data);
+    fetch(API_URL)
+      .then(function(response) {
+        if (!response.ok) throw new Error("Network response was not ok");
+        return response.json();
       })
-      .withFailureHandler(function(err) {
+      .then(function(data) {
+        // แก้ไขปัญหาวันที่สะสมให้อ่านง่ายเหมือนเวอร์ชันเดิม
+        awardsCachedData = data.map(function(item) {
+          if (item.timestamp) {
+            var dateObj = new Date(item.timestamp);
+            if (!isNaN(dateObj)) {
+              item.timestamp = dateObj.toLocaleDateString('th-TH', {
+                year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+              });
+            }
+          }
+          return item;
+        });
+
+        renderData(awardsCachedData); 
+        calculateStats(awardsCachedData);
+      })
+      .catch(function(err) {
         console.error("Error loading data: ", err);
-        var errMsg = '<tr><td colspan="5" class="text-center text-danger py-3"><i class="bi bi-exclamation-triangle-fill me-2"></i>ไม่สามารถโหลดข้อมูลได้</td></tr>';
+        var errMsg = '<tr><td colspan="5" class="text-center text-danger py-3"><i class="bi bi-exclamation-triangle-fill me-2"></i>ไม่สามารถโหลดข้อมูลได้ (' + err.message + ')</td></tr>';
         document.getElementById('awardsTableBody').innerHTML = errMsg;
-      })
-      .getAwardsData();
+      });
   }
 
   function calculateStats(data) {
@@ -113,9 +134,6 @@
     tbody.innerHTML = html;
   }
 
-  /**
-   * 🌟 ปรับปรุงใหม่: วาดข้อมูลแบบการ์ดกริด มีรูปภาพพรีวิว และกดคลิกได้ทั้งใบ
-   */
   function renderGridView(data) {
     var gridBody = document.getElementById('awardsGridBody');
     if (data.length === 0) {
@@ -132,32 +150,20 @@
 
       var descText = item.description ? item.description : 'ไม่มีรายละเอียดอธิบายผลงาน';
       
-      // ส่วนวิเคราะห์เพื่อสร้าง HTML รูปภาพพรีวิวด้านบนการ์ด
       var cardPreviewHtml = '';
       if (item.fileId) {
         var lowerUrl = item.fileUrl ? item.fileUrl.toLowerCase() : '';
+        var imgUrl = "https://lh3.googleusercontent.com/d/" + item.fileId + "=w800"; // อัปเดตลิงก์ดึงภาพพรีวิวให้เสถียรขึ้น
         
-        // ถ้าเป็นไฟล์ PDF หรือไฟล์อื่นๆ ที่ไม่ใช่รูปภาพเด่นชัด
-        if (lowerUrl.includes('.pdf') || (!lowerUrl.match(/\.(jpeg|jpg|gif|png)$/) && lowerUrl !== '')) {
-          var imgUrl = "https://lh3.googleusercontent.com/d/" + item.fileId + "=w800";
-          cardPreviewHtml = '<div class="card-preview-container">' +
-                              '<img src="' + imgUrl + '" class="card-thumbnail-img" alt="ภาพหลักฐานผลงาน">' +
-                            '</div>';
-        } else {
-          // ถ้าเป็นรูปภาพ ให้ดึง Link Thumbnail ตรงมาจาก Google Drive มาส่องพรีวิว
-          var imgUrl = "https://lh3.googleusercontent.com/d/" + item.fileId + "=w800";
-          cardPreviewHtml = '<div class="card-preview-container">' +
-                              '<img src="' + imgUrl + '" class="card-thumbnail-img" alt="ภาพหลักฐานผลงาน">' +
-                            '</div>';
-        }
+        cardPreviewHtml = '<div class="card-preview-container">' +
+                            '<img src="' + imgUrl + '" class="card-thumbnail-img" alt="ภาพหลักฐานผลงาน" onerror="this.src=\'https://placehold.co/600x400?text=No+Preview\'">' +
+                          '</div>';
       } else {
-        // กรณีไม่มีไฟล์แนบส่งเข้ามาแต่แรก
         cardPreviewHtml = '<div class="card-preview-container bg-light text-muted">' +
                             '<i class="bi bi-image card-placeholder-icon text-black-50"></i>' +
                           '</div>';
       }
 
-      // ฝังเหตุการณ์ onclick ไว้ที่ตัวพ่อโครงสร้างการ์ด และเปลี่ยนท้ายปุ่มเป็นลิงก์ข้อความหรูๆ
       html += '<div class="col-12 col-md-6 col-lg-4">' +
                 '<div class="card h-100 border border-light bg-white portfolio-card clickable-card shadow-sm" onclick="viewDetails(\'' + item.id + '\')">' +
                   cardPreviewHtml + 
@@ -179,14 +185,10 @@
     gridBody.innerHTML = html;
   }
 
-  /**
-   * ฟังก์ชันค้นหาและกรองข้อมูลแบบเรียลไทม์ (เวอร์ชันปลอดภัย บั๊กไม่กิน)
-   */
   function filterData() {
     var searchText = document.getElementById('searchBar').value.toLowerCase();
     
     var filtered = awardsCachedData.filter(function(item) {
-      // ใช้ String() ครอบ และเช็คค่าว่าง เพื่อแปลงทุกอย่าง (ตัวเลข/ค่าว่าง) ให้กลายเป็นตัวอักษรก่อน .toLowerCase()
       var title = item.title ? String(item.title).toLowerCase() : '';
       var category = item.category ? String(item.category).toLowerCase() : '';
       var year = item.year ? String(item.year).toLowerCase() : '';
@@ -198,7 +200,7 @@
             id.includes(searchText);
     });
     
-    renderData(filtered); // วาดข้อมูลใหม่ตามมุมมองปัจจุบัน
+    renderData(filtered);
   }
 
   function handleFormSubmit(e) {
@@ -239,32 +241,45 @@
     }
   }
 
+  /**
+   * 📤 ปรับปรุง: เปลี่ยนจากการส่งด้วย google.script.run เป็น fetch (POST) ไปยัง API
+   */
   function submitDataToServer(payload) {
-    google.script.run
-      .withSuccessHandler(function(response) {
-        setLoadingState(false);
-        if (response.success) {
-          Swal.fire({
-            icon: 'success',
-            title: 'บันทึกสำเร็จ!',
-            text: response.message,
-            confirmButtonText: 'ตกลง'
-          }).then(function() {
-            document.getElementById('awardForm').reset();
-            document.getElementById('awardForm').classList.remove('was-validated');
-            var dashboardTab = new bootstrap.Tab(document.getElementById('dashboard-tab'));
-            dashboardTab.show();
-            loadDashboardData();
-          });
-        } else {
-          showErrorAlert(response.message);
-        }
-      })
-      .withFailureHandler(function(err) {
-        setLoadingState(false);
-        showErrorAlert(err.toString());
-      })
-      .saveAward(payload);
+    fetch(API_URL, {
+      method: "POST",
+      redirect: "follow", // จำเป็นอย่างยิ่งสำหรับ GAS API เพื่อรองรับการ Redirect
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8" // ใช้ text/plain ป้องกันปัญหาระบบตรวจเช็ค CORS บางประเภท
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(function(response) {
+      if (!response.ok) throw new Error("ไม่สามารถส่งข้อมูลไปยังเซิร์ฟเวอร์ได้");
+      return response.json();
+    })
+    .then(function(response) {
+      setLoadingState(false);
+      if (response.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'บันทึกสำเร็จ!',
+          text: response.message,
+          confirmButtonText: 'ตกลง'
+        }).then(function() {
+          document.getElementById('awardForm').reset();
+          document.getElementById('awardForm').classList.remove('was-validated');
+          var dashboardTab = new bootstrap.Tab(document.getElementById('dashboard-tab'));
+          dashboardTab.show();
+          loadDashboardData(); // รีโหลดข้อมูลใหม่จาก API หลังบันทึกสำเร็จ
+        });
+      } else {
+        showErrorAlert(response.message);
+      }
+    })
+    .catch(function(err) {
+      setLoadingState(false);
+      showErrorAlert(err.toString());
+    });
   }
 
   function setLoadingState(isLoading) {
@@ -324,10 +339,10 @@
     if (!item.fileId) {
       container.innerHTML = '<span class="text-muted"><i class="bi bi-eye-slash me-2"></i> ไม่มีไฟล์หลักฐานแนบไว้ในระบบ</span>';
     } else {
-      var lowerUrl = item.fileUrl.toLowerCase();
+      var lowerUrl = item.fileUrl ? item.fileUrl.toLowerCase() : '';
       if (lowerUrl.includes('.pdf') || lowerUrl.includes('id=') || !lowerUrl.match(/\.(jpeg|jpg|gif|png)$/)) {
         var embedUrl = "https://drive.google.com/file/d/" + item.fileId + "/preview";
-        container.innerHTML = '<iframe src="' + embedUrl + '" class="preview-pdf" allow="autoplay"></iframe>';
+        container.innerHTML = '<iframe src="' + embedUrl + '" class="preview-pdf" allow="autoplay" style="width:100%; height:400px; border:none;"></iframe>';
       } else {
         var imgUrl = "https://drive.google.com/uc?export=view&id=" + item.fileId;
         container.innerHTML = '<img src="' + imgUrl + '" class="img-fluid preview-img rounded shadow-sm" alt="ตัวอย่างหลักฐานเกียรติบัตร">';
