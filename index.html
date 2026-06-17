@@ -552,14 +552,15 @@
       var cardPreviewHtml = '';
       
       if (item.fileId) {
-        var imgUrl = "https://drive.google.com/uc?export=view&id=" + item.fileId;
-        cardPreviewHtml = '<div class="card-preview-container">' +
-                            '<img src="' + imgUrl + '" class="card-thumbnail-img" alt="ภาพหลักฐานผลงาน" onerror="this.src=\'https://placehold.co/600x400?text=PDF+Document\'">' +
-                          '</div>';
+        var imgUrl = "https://lh3.googleusercontent.com/d/" + item.fileId + "=w800";
+          cardPreviewHtml = '<div class="card-preview-container">' +
+                              '<img src="' + imgUrl + '" class="card-thumbnail-img" alt="ภาพหลักฐานผลงาน">' +
+                            '</div>';
       } else {
-        cardPreviewHtml = '<div class="card-preview-container bg-light text-muted">' +
-                            '<i class="bi bi-image card-placeholder-icon text-black-50"></i>' +
-                          '</div>';
+        var imgUrl = "https://lh3.googleusercontent.com/d/" + item.fileId + "=w800";
+          cardPreviewHtml = '<div class="card-preview-container">' +
+                              '<img src="' + imgUrl + '" class="card-thumbnail-img" alt="ภาพหลักฐานผลงาน">' +
+                            '</div>';
       }
 
       html += '<div class="col-12 col-md-6 col-lg-4">' +
