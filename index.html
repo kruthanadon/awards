@@ -413,6 +413,7 @@
   var currentViewMode = 'table'; 
 
   document.addEventListener('DOMContentLoaded', function() {
+    console.log("ℹ️ [System] DOM Fully Loaded. Initializing core modules...");
     detailsModalObj = new bootstrap.Modal(document.getElementById('detailsModal'));
     initializeYearDropdown();
     loadDashboardData();
@@ -432,15 +433,20 @@
       optionsHtml += '<option value="' + year + '">' + year + '</option>';
     }
     yearSelect.innerHTML = optionsHtml;
+    console.log("ℹ️ [Dropdown] Year selector initialized from พ.ศ.", currentYearBE, "to", currentYearBE - 10);
   }
 
   function loadDashboardData() {
+    console.log("🌐 [API - GET] Fetching data from API_URL:", API_URL);
     fetch(API_URL)
       .then(function(response) {
+        console.log("📥 [API - GET] Response Status:", response.status, response.statusText);
         if (!response.ok) throw new Error("Network response was not ok");
         return response.json();
       })
       .then(function(data) {
+        console.log("📦 [API - GET] Raw data received:", data);
+        
         awardsCachedData = data.map(function(item) {
           if (item.timestamp) {
             var dateObj = new Date(item.timestamp);
@@ -453,11 +459,12 @@
           return item;
         });
 
+        console.log("📊 [Data Engine] Processed Cached Data (Mapped Dates):", awardsCachedData);
         renderData(awardsCachedData); 
         calculateStats(awardsCachedData);
       })
       .catch(function(err) {
-        console.error("Error loading data: ", err);
+        console.error("❌ [API - GET] Error loading data:", err);
         var errMsg = '<tr><td colspan="5" class="text-center text-danger py-3"><i class="bi bi-exclamation-triangle-fill me-2"></i>ไม่สามารถโหลดข้อมูลได้ (' + err.message + ')</td></tr>';
         document.getElementById('awardsTableBody').innerHTML = errMsg;
       });
@@ -469,6 +476,8 @@
     var regional = data.filter(function(item) { return item.category === 'ระดับภาค'; }).length;
     var school = data.filter(function(item) { return item.category === 'ภายในสถานศึกษา'; }).length;
     
+    console.log("📈 [Stats Calculation] Counters updated -> Total:", total, "| National:", national, "| Regional:", regional, "| School:", school);
+    
     document.getElementById('stat-total').innerText = total;
     document.getElementById('stat-national').innerText = national;
     document.getElementById('stat-regional').innerText = regional;
@@ -477,6 +486,7 @@
 
   function switchView(mode) {
     currentViewMode = mode;
+    console.log("🔄 [UI View Changer] Switched view mode to:", mode);
     
     var btnTable = document.getElementById('btnViewTable');
     var btnGrid = document.getElementById('btnViewGrid');
@@ -502,6 +512,7 @@
   }
 
   function renderData(data) {
+    console.log("🎨 [Renderer] Rendering items count:", data.length, "into Mode:", currentViewMode);
     if (currentViewMode === 'table') {
       renderTableView(data);
     } else {
@@ -554,7 +565,6 @@
       var cardPreviewHtml = '';
       
       if (item.fileId) {
-        // 🛠️ แก้ไขลิงก์ดึงภาพพรีวิวจาก Google Drive Direct Link ให้ถูกต้องและเป็น HTTPS ปลอดภัย
         var imgUrl = "https://drive.google.com/uc?export=view&id=" + item.fileId;
         cardPreviewHtml = '<div class="card-preview-container">' +
                             '<img src="' + imgUrl + '" class="card-thumbnail-img" alt="ภาพหลักฐานผลงาน" onerror="this.src=\'https://placehold.co/600x400?text=PDF+Document\'">' +
@@ -588,6 +598,7 @@
 
   function filterData() {
     var searchText = document.getElementById('searchBar').value.toLowerCase();
+    console.log("🔍 [Search Engine] Query input string changed:", searchText);
     
     var filtered = awardsCachedData.filter(function(item) {
       var title = item.title ? String(item.title).toLowerCase() : '';
@@ -601,14 +612,17 @@
             id.includes(searchText);
     });
     
+    console.log("🔍 [Search Engine] Filter match results count:", filtered.length);
     renderData(filtered);
   }
 
   function handleFormSubmit(e) {
     e.preventDefault();
+    console.log("📝 [Form Submit] Triggered. Validating inputs...");
     var form = document.getElementById('awardForm');
     
     if (!form.checkValidity()) {
+      console.warn("⚠️ [Form Submit] Validation failed. Missing required fields.");
       form.classList.add('was-validated');
       return;
     }
@@ -628,33 +642,42 @@
     };
 
     if (file) {
+      console.log("📁 [Form Submit] Detected file attachment:", file.name, "size:", file.size, "bytes");
       var reader = new FileReader();
       reader.onload = function(evt) {
+        console.log("🔄 [File Reader] Success converted file to Base64 String.");
         var base64Data = evt.target.result.split(',')[1];
         awardPayload.fileData = base64Data;
         awardPayload.fileName = file.name;
         awardPayload.mimeType = file.type;
+        
+        console.log("🚀 [Form Submit] Packaging payload WITH file details...");
         submitDataToServer(awardPayload);
       };
       reader.readAsDataURL(file);
     } else {
+      console.log("🚀 [Form Submit] Packaging payload WITHOUT file attachment...");
       submitDataToServer(awardPayload);
     }
   }
 
   function submitDataToServer(payload) {
-    // 🛠️ ปรับปรุงสไตล์การส่ง Header เพื่อให้สอดรับโครงสร้าง API ของ Google Script ป้องกันการค้างหมุนวน
+    console.log("📤 [API - POST] Attempting submission to Google Web App URL...");
+    console.log("📦 [API - POST] Outgoing Payload Sample Data (Truncated fileData):", {
+      ...payload,
+      fileData: payload.fileData ? payload.fileData.substring(0, 30) + "... [Base64 Encoded]" : null
+    });
+
     fetch(API_URL, {
       method: "POST",
-      mode: "no-cors", // ใช้ no-cors ในกรณีต้องการยิงข้ามโดเมนไปยังเครือข่ายภายนอกแบบรวดเร็ว
+      mode: "no-cors", 
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(payload)
     })
     .then(function() {
-      // เนื่องจากการใช้ no-cors จะไม่คืนค่า json response กลับมาเพื่อความปลอดภัย
-      // จึงทำการจำลองการสำเร็จเพื่อคืนหน้าจอกลับสู่แดชบอร์ดอย่างราบรื่น
+      console.log("✅ [API - POST] Network operation executed (no-cors mode enabled).");
       setLoadingState(false);
       Swal.fire({
         icon: 'success',
@@ -666,10 +689,13 @@
         document.getElementById('awardForm').classList.remove('was-validated');
         var dashboardTab = new bootstrap.Tab(document.getElementById('dashboard-tab'));
         dashboardTab.show();
-        setTimeout(loadDashboardData, 1500); // ดีเลย์โหลดข้อมูลสั้นๆ ให้เซิร์ฟเวอร์เคลียร์คิวข้อมูล
+        
+        console.log("🔄 [System] Reloading dashboard data feed in 1.5 seconds...");
+        setTimeout(loadDashboardData, 1500); 
       });
     })
     .catch(function(err) {
+      console.error("❌ [API - POST] Submission crashed or failed:", err);
       setLoadingState(false);
       showErrorAlert(err.toString());
     });
@@ -701,9 +727,15 @@
   }
 
   function viewDetails(id) {
+    console.log("🔍 [Modal Viewer] User clicked Item Reference ID:", id);
     var item = awardsCachedData.find(function(a) { return a.id === id; });
-    if (!item) return;
+    if (!item) {
+      console.error("❌ [Modal Viewer] Item mismatch! ID not found in Local Cache Data.");
+      return;
+    }
     
+    console.log("ℹ️ [Modal Viewer] Target item object matched data:", item);
+
     document.getElementById('modal-id').innerText = item.id;
     document.getElementById('modal-title').innerText = item.title;
     document.getElementById('modal-year').innerText = item.year;
@@ -730,14 +762,19 @@
     container.innerHTML = ''; 
     
     if (!item.fileId) {
+      console.log("ℹ️ [Modal Viewer Live Preview] No FileID available. Injecting placeholder label.");
       container.innerHTML = '<span class="text-muted"><i class="bi bi-eye-slash me-2"></i> ไม่มีไฟล์หลักฐานแนบไว้ในระบบ</span>';
     } else {
       var lowerUrl = item.fileUrl ? item.fileUrl.toLowerCase() : '';
+      console.log("ℹ️ [Modal Viewer Live Preview] Processing File ID:", item.fileId, "Url String:", lowerUrl);
+      
       if (lowerUrl.includes('.pdf') || lowerUrl.includes('id=') || !lowerUrl.match(/\.(jpeg|jpg|gif|png)$/)) {
         var embedUrl = "https://drive.google.com/file/d/" + item.fileId + "/preview";
+        console.log("🖨️ [Modal Viewer Live Preview] Recognized as PDF/Google Doc DocView. Target Embed URL:", embedUrl);
         container.innerHTML = '<iframe src="' + embedUrl + '" class="preview-pdf" allow="autoplay" style="width:100%; height:400px; border:none;"></iframe>';
       } else {
         var imgUrl = "https://drive.google.com/uc?export=view&id=" + item.fileId;
+        console.log("🖼️ [Modal Viewer Live Preview] Recognized as direct raw image file. Target Render URL:", imgUrl);
         container.innerHTML = '<img src="' + imgUrl + '" class="img-fluid preview-img rounded shadow-sm" alt="ตัวอย่างหลักฐานเกียรติบัตร">';
       }
     }
