@@ -8,7 +8,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/gh/kruthanadon/awards@main/CSS.css" rel="stylesheet">
-  
 </head>
 <body>
 
@@ -31,12 +30,12 @@
 
     <div class="tab-content" id="mainTabsContent">
       
-      <div class="tab-pane fade show active" id="dashboard-pane" role="tabpanel" tabindex="0">
+      <div class="tab-pane fade show active" id="dashboard-pane" role="tabpanel" aria-labelledby="dashboard-tab">
         <div class="row g-3 mb-4" id="statCardsContainer">
           <div class="col-6 col-lg-3">
             <div class="card card-stat bg-total text-white h-100 border-0 shadow-sm">
               <div class="card-body">
-                <h6 class="text-uppercase opacity-75">ผลงานทั้งหมด</h6>
+                <h6 class="text-uppercase opacity-75 small fw-bold">ผลงานทั้งหมด</h6>
                 <h2 class="display-6 fw-bold mb-0" id="stat-total">0</h2>
               </div>
             </div>
@@ -44,7 +43,7 @@
           <div class="col-6 col-lg-3">
             <div class="card card-stat bg-national text-white h-100 border-0 shadow-sm">
               <div class="card-body">
-                <h6 class="text-uppercase opacity-75">ระดับชาติ</h6>
+                <h6 class="text-uppercase opacity-75 small fw-bold">ระดับชาติ</h6>
                 <h2 class="display-6 fw-bold mb-0" id="stat-national">0</h2>
               </div>
             </div>
@@ -52,7 +51,7 @@
           <div class="col-6 col-lg-3">
             <div class="card card-stat bg-regional text-white h-100 border-0 shadow-sm">
               <div class="card-body">
-                <h6 class="text-uppercase opacity-75">ระดับภาค</h6>
+                <h6 class="text-uppercase opacity-75 small fw-bold">ระดับภาค</h6>
                 <h2 class="display-6 fw-bold mb-0" id="stat-regional">0</h2>
               </div>
             </div>
@@ -60,16 +59,14 @@
           <div class="col-6 col-lg-3">
             <div class="card card-stat bg-school text-white h-100 border-0 shadow-sm">
               <div class="card-body">
-                <h6 class="text-uppercase opacity-75">ภายในสถานศึกษา</h6>
+                <h6 class="text-uppercase opacity-75 small fw-bold">ภายในสถานศึกษา</h6>
                 <h2 class="display-6 fw-bold mb-0" id="stat-school">0</h2>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="card shadow-sm border-0">       
-          
-          <div class="card shadow-sm border-0">
+        <div class="card shadow-sm border-0">
           <div class="card-header bg-white py-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
             <h5 class="mb-0 text-secondary fw-bold" id="viewTitle"><i class="bi bi-table me-2"></i>รายการผลงานและรางวัล</h5>
             
@@ -81,7 +78,7 @@
                 </div>
               </div>
               
-              <div class="btn-group border rounded bg-light p-1 shadow-sm-sm" role="group" aria-label="View Switcher">
+              <div class="btn-group border rounded bg-light p-1 shadow-sm" role="group" aria-label="View Switcher">
                 <button type="button" class="btn btn-view-toggle active" id="btnViewTable" onclick="switchView('table')" title="มุมมองรายการตาราง">
                   <i class="bi bi-list-task"></i>
                 </button>
@@ -120,11 +117,9 @@
             </div>
           </div>
         </div>
-
-        </div>
       </div>
 
-      <div class="tab-pane fade" id="form-pane" role="tabpanel" tabindex="0">
+      <div class="tab-pane fade" id="form-pane" role="tabpanel" aria-labelledby="form-tab">
         <div class="card shadow-sm border-0 max-width-form mx-auto">
           <div class="card-header bg-white py-3">
             <h5 class="mb-0 text-primary fw-bold"><i class="bi bi-journal-plus me-2"></i>แบบฟอร์มบันทึกผลงานและรางวัล</h5>
@@ -186,36 +181,38 @@
       <div class="modal-content border-0 shadow-lg">
         <div class="modal-header bg-light">
           <h5 class="modal-title fw-bold text-dark" id="detailsModalLabel"><i class="bi bi-award text-warning me-2"></i>รายละเอียดผลงาน</h5>
-          <button type="button" class="btn-close" data-bs-shadow="none" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body p-4">
           <div class="row g-3">
             <div class="col-md-7">
               <table class="table table-sm table-borderless">
-                <tr>
-                  <th class="text-muted py-1" style="width: 30%">รหัสอ้างอิง:</th>
-                  <td id="modal-id" class="fw-bold text-primary py-1">-</td>
-                </tr>
-                <tr>
-                  <th class="text-muted py-1">ชื่อผลงาน:</th>
-                  <td id="modal-title" class="fw-bold text-dark py-1">-</td>
-                </tr>
-                <tr>
-                  <th class="text-muted py-1">ประเภท:</th>
-                  <td id="modal-category" class="py-1"><span class="badge bg-secondary" id="modal-badge-category">-</span></td>
-                </tr>
-                <tr>
-                  <th class="text-muted py-1">ปี พ.ศ.:</th>
-                  <td id="modal-year" class="py-1">-</td>
-                </tr>
-                <tr>
-                  <th class="text-muted py-1">วันที่บันทึก:</th>
-                  <td id="modal-timestamp" class="text-muted py-1">-</td>
-                </tr>
-                <tr>
-                  <th class="text-muted py-1" valign="top">รายละเอียด:</th>
-                  <td id="modal-description" class="text-secondary py-1" style="white-space: pre-line;">-</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <th class="text-muted py-1" style="width: 30%">รหัสอ้างอิง:</th>
+                    <td id="modal-id" class="fw-bold text-primary py-1">-</td>
+                  </tr>
+                  <tr>
+                    <th class="text-muted py-1">ชื่อผลงาน:</th>
+                    <td id="modal-title" class="fw-bold text-dark py-1">-</td>
+                  </tr>
+                  <tr>
+                    <th class="text-muted py-1">ประเภท:</th>
+                    <td id="modal-category" class="py-1"><span class="badge bg-secondary" id="modal-badge-category">-</span></td>
+                  </tr>
+                  <tr>
+                    <th class="text-muted py-1">ปี พ.ศ.:</th>
+                    <td id="modal-year" class="py-1">-</td>
+                  </tr>
+                  <tr>
+                    <th class="text-muted py-1">วันที่บันทึก:</th>
+                    <td id="modal-timestamp" class="text-muted py-1">-</td>
+                  </tr>
+                  <tr>
+                    <th class="text-muted py-1" valign="top">รายละเอียด:</th>
+                    <td id="modal-description" class="text-secondary py-1" style="white-space: pre-line;">-</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
             <div class="col-md-5 d-flex flex-column align-items-center justify-content-center border-start border-light ps-md-4">
@@ -233,9 +230,13 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.all.min.js"></script>
   <script src="https://raw.githubusercontent.com/kruthanadon/awards/refs/heads/main/JS.js"></script>
+
+  <script>
+    // วางโค้ด JS ที่ใส่ค่า API_URL ไว้ตรงนี้เพื่อให้ระบบทำงานสมบูรณ์ครับ
+  </script>
 
 </body>
 </html>
