@@ -1,166 +1,183 @@
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap');
-  
-  body {
-    font-family: 'Sarabun', sans-serif;
-    background-color: #f4f6f9;
-    color: #333;
-  }
-  
-  .navbar {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
-  }
+/* ==========================================================================
+   1. CORE STYLE & CORE FONTS (สไตล์พื้นฐานของระบบ)
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap');
 
-  .nav-pills .nav-link {
-    color: #495057;
-    background-color: #fff;
-    border: 1px solid #dee2e6;
-    font-weight: 600;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .nav-pills .nav-link.active {
-    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
-    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
-  }
+body {
+  font-family: 'Sarabun', sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
+}
 
-  /* Stat Cards Gradient Styling */
-  .card-stat {
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .card-stat:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1) !important;
-  }
-  .bg-total { background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); }
-  .bg-national { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); }
-  .bg-regional { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); }
-  .bg-school { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+.navbar {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+}
 
-  .search-box {
-    min-width: 280px;
-  }
+.max-width-form {
+  max-width: 750px;
+}
 
-  .max-width-form {
-    max-width: 750px;
-  }
-  
-  .preview-box {
-    min-height: 350px;
-    width: 100%;
-    overflow: hidden;
-  }
+.btn-2.5 {
+  padding-top: 0.65rem;
+  padding-bottom: 0.65rem;
+}
 
-  .preview-img {
-    max-height: 450px;
-    max-width: 100%;
-    object-fit: contain;
-  }
+/* ==========================================================================
+   2. NAVIGATION & TABS (แท็บสลับหน้าแดชบอร์ด)
+   ========================================================================== */
+.nav-pills .nav-link {
+  color: #495057;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
 
-  .preview-pdf {
-    width: 100%;
-    height: 500px;
-    border: none;
-  }
-  
-  .btn-2.5 {
-    padding-top: 0.65rem;
-    padding-bottom: 0.65rem;
-  }
-</style>
+.nav-pills .nav-link.active {
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+}
 
-<style>
-  /* โค้ดตกแต่งเพิ่มเติมสำหรับระบบสลับมุมมอง */
-  
-  /* ปุ่มสลับมุมมองสไตล์ Google Drive */
-  .btn-view-toggle {
-    border: none;
-    background: transparent;
-    color: #6c757d;
-    padding: 0.375rem 0.75rem;
-    border-radius: 4px;
-    transition: all 0.2s;
-  }
-  .btn-view-toggle:hover {
-    background-color: #e9ecef;
-    color: #495057;
-  }
-  .btn-view-toggle.active {
-    background-color: #fff;
-    color: #0d6efd;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    font-weight: bold;
-  }
+/* ==========================================================================
+   3. STAT CARDS GRADIENT (การ์ดสรุปจำนวนแยกสีแบบไล่เฉด)
+   ========================================================================== */
+.card-stat {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
 
-  /* ตกแต่งการ์ดผลงานในหน้ากริด */
-  .portfolio-card {
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .portfolio-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
-  }
+.card-stat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1) !important;
+}
 
-  /* บีบตัวอักษรไม่ให้ยาวเกินไปในการ์ด */
-  .text-line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    height: 2.8rem; /* ล็อกความสูงหัวข้อ */
-  }
-  .text-line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    height: 3.6rem; /* ล็อกความสูงรายละเอียด */
-  }
-</style>
+.bg-total    { background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); }
+.bg-national { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); }
+.bg-regional { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); }
+.bg-school   { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
 
-<style>
-  /* เพิ่มเติมระบบการ์ดพรีวิวแบบคลิกได้ทั้งชิ้น */
-  
-  /* ตั้งค่าให้การ์ดแสดงสัญลักษณ์ว่ากดคลิกได้ */
-  .portfolio-card.clickable-card {
-    cursor: pointer;
-    background-color: #ffffff;
-  }
+/* ==========================================================================
+   4. SEARCH & VIEW TOGGLE (แถบค้นหาและปุ่มสลับมุมมองสไตล์ Google Drive)
+   ========================================================================== */
+.search-box {
+  min-width: 280px;
+}
 
-  /* กรอบสี่เหลี่ยมสำหรับล็อกขนาดรูปพรีวิวด้านบนการ์ด */
-  .card-preview-container {
-    height: 160px;
-    background-color: #f8f9fa;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-bottom: 1px solid #f1f3f5;
-    position: relative;
-  }
+.btn-view-toggle {
+  border: none;
+  background: transparent;
+  color: #6c757d;
+  padding: 0.375rem 0.75rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
 
-  /* จัดการรูปภาพให้ตัดพอดีกรอบ ไม่บิดเบี้ยว */
-  .card-thumbnail-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
+.btn-view-toggle:hover {
+  background-color: #e9ecef;
+  color: #495057;
+}
 
-  /* เพิ่มลูกเล่นเมื่อเอาเมาส์มาวางบนการ์ด ให้รูปซูมขึ้นเล็กน้อย */
-  .portfolio-card:hover .card-thumbnail-img {
-    transform: scale(1.05);
-  }
+.btn-view-toggle.active {
+  background-color: #fff;
+  color: #0d6efd;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-weight: bold;
+}
 
-  /* ตกแต่งไอคอนกรณีที่เป็นไฟล์ PDF หรือไม่มีรูป */
-  .card-placeholder-icon {
-    font-size: 3rem;
-    opacity: 0.7;
-    transition: transform 0.3s ease;
-  }
-  .portfolio-card:hover .card-placeholder-icon {
-    transform: translateY(-3px);
-  }
-</style>
+/* ==========================================================================
+   5. PORTFOLIO GRID CARD (การ์ดแสดงผลงานในหน้าระบบกริด)
+   ========================================================================== */
+.portfolio-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.portfolio-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.portfolio-card.clickable-card {
+  cursor: pointer;
+  background-color: #ffffff;
+}
+
+/* กรอบล็อกขนาดสัดส่วนภาพพรีวิวด้านบนการ์ด */
+.card-preview-container {
+  height: 160px;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-bottom: 1px solid #f1f3f5;
+  position: relative;
+}
+
+/* จัดสัดส่วนรูปภาพให้ตัดเข้ากรอบพอดี */
+.card-thumbnail-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.portfolio-card:hover .card-thumbnail-img {
+  transform: scale(1.05);
+}
+
+/* ไอคอน Placeholder (กรณีไม่มีรูปหลักฐาน) */
+.card-placeholder-icon {
+  font-size: 3rem;
+  opacity: 0.7;
+  transition: transform 0.3s ease;
+}
+
+.portfolio-card:hover .card-placeholder-icon {
+  transform: translateY(-3px);
+}
+
+/* บีบตัวอักษรไม่ให้ยาวล้นจนการ์ดโย้ (Line Clamp) */
+.text-line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.8rem; /* ล็อกความสูงหัวข้อ */
+}
+
+.text-line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 3.6rem; /* ล็อกความสูงรายละเอียด */
+}
+
+/* ==========================================================================
+   6. MODAL DETAILS PREVIEW (หน้าต่างแสดงหลักฐานไฟล์เมื่อคลิกดูรายละเอียด)
+   ========================================================================== */
+.preview-box {
+  min-height: 350px;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px dashed #dee2e6;
+}
+
+.preview-img {
+  max-height: 450px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.preview-pdf {
+  width: 100%;
+  height: 500px;
+  border: none;
+  border-radius: 6px;
+}
